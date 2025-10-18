@@ -144,11 +144,12 @@ else:
     # Generate recommendations
     try:
         topN = get_recommendations(
-            target_user=user_id,
-            ratings_path="data/ratings.csv",
-            movies_path="data/movies.csv",
-            links_path="data/links.csv"
+        target_user=user_id,
+        ratings_path="app/data/ratings.csv",
+        movies_path="app/data/movies.csv",
+        links_path="app/data/links.csv"
         )
+
 
         if len(topN) == 0:
             st.warning("No recommendations found for this user.")
