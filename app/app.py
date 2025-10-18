@@ -1,79 +1,147 @@
+# app/app.py
 import streamlit as st
 import os
 from recommender import get_recommendations
 from utils import get_poster
 
-#Initialize session state 
+
+#  INITIALIZATION
+
+st.set_page_config(page_title="MiniFlix", layout="wide", page_icon="🎬")
+
 if "selected_user" not in st.session_state:
     st.session_state.selected_user = None
 
-# Page setup
-st.set_page_config(page_title="MiniFlix", page_icon="🎬", layout="wide")
 
-# Custom CSS for Netflix look 
+#  CSS STYLING
 st.markdown("""
 <style>
+/* Global App Styling */
 .stApp {
     background-color: #141414;
     background-image: url("https://wallpapers.com/images/hd/dark-netflix-ls3t9oqfzknzkdp8.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    color: #fff;
+    font-family: 'Helvetica Neue', sans-serif;
+    color: #ffffff;
 }
-h1, h2, h3, h4 {
-    color: #e50914;
-    font-family: "Helvetica Neue", sans-serif;
+
+/* Headings */
+h1, h2, h3 {
     font-weight: bold;
-}
-.user-card {
     text-align: center;
-    border-radius: 15px;
-    padding: 10px;
-    transition: transform 0.3s;
+    color: #e50914;
 }
-.user-card:hover {
-    transform: scale(1.08);
+
+/* Avatar hover effects */
+.avatar {
+    transition: all 0.3s ease-in-out;
+    border-radius: 50%;
+    filter: grayscale(60%);
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.8);
+}
+.avatar:hover {
+    transform: scale(1.15);
+    filter: grayscale(0%);
+    box-shadow: 0px 0px 25px rgba(229,9,20,0.8);
     cursor: pointer;
+}
+
+/* User button styling */
+.stButton>button {
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+}
+.stButton>button:hover {
+    color: #e50914;
+    transform: scale(1.05);
+}
+
+/* Movie cards styling */
+.movie-card {
+    text-align: center;
+    padding: 10px;
+}
+.movie-card img {
+    border-radius: 10px;
+    transition: transform 0.2s ease;
+}
+.movie-card img:hover {
+    transform: scale(1.05);
+}
+.movie-title {
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 8px;
+}
+.movie-rating {
+    color: #e50914;
+    font-size: 14px;
+}
+.back-btn {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+}
+.back-btn:hover {
+    background-color: #f40612;
+    transform: scale(1.05);
 }
 </style>
 """, unsafe_allow_html=True)
 
-# User avatars 
+
+# USER AVATARS AND PROFILES
+
 avatars = [
-    os.path.join(os.path.dirname(__file__), "assets/avatar1.png"),
-    os.path.join(os.path.dirname(__file__), "assets/avatar2.png"),
+    "https://cdn-icons-png.flaticon.com/512/4140/4140048.png",
+    "https://cdn-icons-png.flaticon.com/512/4140/4140037.png",
+    "https://cdn-icons-png.flaticon.com/512/4140/4140061.png",
+    "https://cdn-icons-png.flaticon.com/512/4140/4140056.png"
 ]
 
-# Available users (choose 2 random or fixed)
-users = [10, 20] 
+users = [10, 20, 30, 40] 
 
-# Display home if no user selected 
+
+# HOME SCREEN (PROFILE SELECTION)
+
 if st.session_state.selected_user is None:
-    st.title("🎬 MiniFlix")
-    st.subheader("Who's watching?")
+    st.markdown("<h1>MINIFLIX</h1>", unsafe_allow_html=True)
+    st.markdown("<h3>Who's watching?</h3>", unsafe_allow_html=True)
+    st.write("")  # Add spacing
 
     cols = st.columns(len(users))
 
     for i, user in enumerate(users):
         with cols[i]:
-            # Safely load avatar (fallback to placeholder if missing)
             try:
-                st.image(avatars[i % len(avatars)], width=180)
+                st.image(avatars[i], width=160, caption="", output_format="auto", use_container_width=False, clamp=True, channels="RGB")
             except Exception:
-                st.image("https://via.placeholder.com/180x180.png?text=User", width=180)
+                st.image(fallback_avatars[i], width=160)
 
-            # Button to select user
+            # Add hoverable avatar (CSS handles animation)
             if st.button(f"User {user}", key=f"user_{user}", use_container_width=True):
                 st.session_state.selected_user = user
                 st.rerun()
 
-# If user selected: show recommendations
+# RECOMMENDATION SCREEN
 else:
     user_id = st.session_state.selected_user
-    st.markdown(f"## 👤 Recommendations for User {user_id}")
-    st.write("Fetching personalized recommendations...")
+    st.markdown(f"<h2>Welcome back, User {user_id}</h2>", unsafe_allow_html=True)
+    st.markdown("<h3>Because you watched similar movies...</h3>", unsafe_allow_html=True)
 
+    # Generate recommendations
     try:
         topN = get_recommendations(
             target_user=user_id,
@@ -83,27 +151,28 @@ else:
         )
 
         if len(topN) == 0:
-            st.warning("No recommendations found for this user. Try another profile.")
+            st.warning("No recommendations found for this user.")
         else:
-            st.success(f"Top {len(topN)} movie recommendations generated!")
-
-            # Display recommendations in rows
+            # Display movies like a Netflix carousel grid
             n_cols = 5
             cols = st.columns(n_cols)
             for i, (_, row) in enumerate(topN.iterrows()):
                 poster = get_poster(row["imdbId"])
                 with cols[i % n_cols]:
+                    st.markdown('<div class="movie-card">', unsafe_allow_html=True)
                     if poster:
                         st.image(poster, use_column_width=True)
                     else:
                         st.image("https://via.placeholder.com/300x450.png?text=No+Poster", use_column_width=True)
-                    st.caption(f"🎥 {row['title']}\n⭐ Predicted Rating: {row['pred']:.2f}")
+                    st.markdown(f"<div class='movie-title'>{row['title']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='movie-rating'>⭐ {row['pred']:.2f}</div>", unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
 
     except Exception as e:
         st.error(f"Error generating recommendations: {e}")
 
-    # Back button to go back to profile selection
-    st.markdown("---")
-    if st.button("⬅️ Back to profiles"):
+    # Back button
+    st.markdown("<br><hr>", unsafe_allow_html=True)
+    if st.button("⬅️ Back to profiles", key="back"):
         st.session_state.selected_user = None
         st.rerun()
