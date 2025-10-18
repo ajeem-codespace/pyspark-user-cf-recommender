@@ -2,7 +2,8 @@
 
 A Netflix-style movie recommendation system built with PySpark 
 
-![MiniFlix Screenshot](https://i.imgur.com/xwcFP0T.png)
+## Streamlit
+Check out the app here: [Streamlit App]()
 
 ---
 
@@ -44,3 +45,8 @@ It is taken from !(https://github.com/sankalpjain99/Movie-recommendation-system.
 
 
 avatars are from flaticon.com
+
+#Streamlit screenshots
+
+![Screenshot1]()
+![Screenshot2]()

@@ -111,7 +111,7 @@ avatars = [
     "https://cdn-icons-png.flaticon.com/512/4140/4140056.png"
 ]
 
-users = [10, 20, 30, 40] 
+users = [1, 2, 3, 4] 
 
 
 # HOME SCREEN (PROFILE SELECTION)
