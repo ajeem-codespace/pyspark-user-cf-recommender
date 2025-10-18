@@ -5,7 +5,7 @@ import streamlit as st
 
 def get_poster(imdb_id, use_tmdb=False):
     """Fetch movie poster using OMDb or TMDb with guaranteed fallback."""
-    fallback = "https://via.placeholder.com/300x450/141414/FFFFFF?text=No+Poster"
+    fallback = "https://dummyimage.com/300x450/141414/ffffff.png&text=No+Poster"
 
     # Handle missing IMDb ID
     if pd.isna(imdb_id):
