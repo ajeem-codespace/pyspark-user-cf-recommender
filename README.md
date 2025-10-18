@@ -45,7 +45,7 @@ The notebook is also added at the notebooks folder.
 ## Dataset
 
 The dataset used is from the **MovieLens** project
-It is taken from !(https://github.com/sankalpjain99/Movie-recommendation-system.git)
+It is taken from https://github.com/sankalpjain99/Movie-recommendation-system.git
 
 
 avatars are from flaticon.com
