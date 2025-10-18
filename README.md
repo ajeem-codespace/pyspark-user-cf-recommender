@@ -3,7 +3,7 @@
 This project implements a user-based collaborative filtering movie recommendation system using Apache Spark (PySpark) for scalable similarity computation and rating prediction, and Streamlit for a Netflix-style interactive web interface. The system uses the MovieLens dataset (ratings.csv, movies.csv, links.csv) to compute user–user similarity (via Pearson correlation), predict ratings for unseen movies using a weighted average formula, and generate precomputed top-N recommendations stored as CSVs for efficient app deployment. The Streamlit frontend allows users to select a profile, view personalized movie recommendations with predicted ratings, and fetch movie posters dynamically using the OMDb API.
 
 ## Streamlit
-Check out the app here: [Streamlit App]()
+Check out the app here: [Streamlit App](https://pyspark-user-cf-recommender.streamlit.app/)
 
 ---
 
