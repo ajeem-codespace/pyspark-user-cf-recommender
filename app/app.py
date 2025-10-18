@@ -5,15 +5,14 @@ from recommender import get_recommendations
 from utils import get_poster
 
 
-#  INITIALIZATION
-
+# INITIALIZATION
 st.set_page_config(page_title="MiniFlix", layout="wide", page_icon="🎬")
 
 if "selected_user" not in st.session_state:
     st.session_state.selected_user = None
 
+# CSS STYLING
 
-#  CSS STYLING
 st.markdown("""
 <style>
 /* Global App Styling */
@@ -69,6 +68,9 @@ h1, h2, h3 {
 }
 .movie-card img {
     border-radius: 10px;
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
     transition: transform 0.2s ease;
 }
 .movie-card img:hover {
@@ -111,10 +113,16 @@ avatars = [
     "https://cdn-icons-png.flaticon.com/512/4140/4140056.png"
 ]
 
-users = [1, 2, 3, 4] 
+# Dynamically detect available users from precomputed CSVs
+pre_dir = os.path.join("app", "data", "precomputed")
+users = sorted([
+    int(f.split("predictions_user")[-1].split(".")[0])
+    for f in os.listdir(pre_dir)
+    if f.startswith("predictions_user") and f.endswith(".csv")
+])
 
 
-# HOME SCREEN (PROFILE SELECTION)
+# HOME SCREEN
 
 if st.session_state.selected_user is None:
     st.markdown("<h1>MINIFLIX</h1>", unsafe_allow_html=True)
@@ -125,44 +133,36 @@ if st.session_state.selected_user is None:
 
     for i, user in enumerate(users):
         with cols[i]:
-            try:
-                st.image(avatars[i], width=160, caption="", output_format="auto", use_container_width=False, clamp=True, channels="RGB")
-            except Exception:
-                st.image(fallback_avatars[i], width=160)
-
-            # Add hoverable avatar (CSS handles animation)
+            st.image(avatars[i % len(avatars)], width=160, use_container_width=False)
             if st.button(f"User {user}", key=f"user_{user}", use_container_width=True):
                 st.session_state.selected_user = user
                 st.rerun()
 
+
 # RECOMMENDATION SCREEN
+
 else:
     user_id = st.session_state.selected_user
     st.markdown(f"<h2>Welcome back, User {user_id}</h2>", unsafe_allow_html=True)
     st.markdown("<h3>Because you watched similar movies...</h3>", unsafe_allow_html=True)
 
-    # Generate recommendations
     try:
-        topN = get_recommendations(
-        target_user=user_id,
-        ratings_path="app/data/ratings.csv",
-        movies_path="app/data/movies.csv",
-        links_path="app/data/links.csv"
-        )
-
+        topN = get_recommendations(target_user=user_id)
 
         if len(topN) == 0:
             st.warning("No recommendations found for this user.")
         else:
-            # Display movies like a Netflix carousel grid
             n_cols = 5
             cols = st.columns(n_cols)
+
             for i, (_, row) in enumerate(topN.iterrows()):
-                poster = get_poster(row["imdbId"])
+                poster = get_poster(row.get("imdbId"))
                 with cols[i % n_cols]:
                     st.markdown('<div class="movie-card">', unsafe_allow_html=True)
-                    st.image(poster if poster else "https://dummyimage.com/300x450/141414/ffffff.png&text=No+Poster", use_container_width=True)
-
+                    st.image(
+                        poster if poster else "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/300px-No_image_available.svg.png",
+                        use_container_width=True
+                    )
                     st.markdown(f"<div class='movie-title'>{row['title']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='movie-rating'>⭐ {row['pred']:.2f}</div>", unsafe_allow_html=True)
                     st.markdown('</div>', unsafe_allow_html=True)
@@ -175,5 +175,3 @@ else:
     if st.button("⬅️ Back to profiles", key="back"):
         st.session_state.selected_user = None
         st.rerun()
-
-
