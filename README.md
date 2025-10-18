@@ -33,7 +33,11 @@ Precomputed predictions_user*.csv
 │  
 Online (Streamlit Cloud)  
 │  
-Reads CSV → Displays Recommendations
+Reads CSV on selected users precomputed predictions
+|
+API call to get posters and details of the movie
+|
+Displays Recommendations
 
 Note: 
 The notebook is also added at the notebooks folder.
@@ -48,5 +52,5 @@ avatars are from flaticon.com
 
 #Streamlit screenshots
 
-![Screenshot1]()
-![Screenshot2]()
+![Screenshot1](app/screenshots/index.png)
+![Screenshot2](app/screenshots/recommendations.png)
