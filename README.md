@@ -50,7 +50,7 @@ It is taken from !(https://github.com/sankalpjain99/Movie-recommendation-system.
 
 avatars are from flaticon.com
 
-#Streamlit screenshots
+# Streamlit screenshots
 
 ![Screenshot1](app/screenshots/index.png)
 ![Screenshot2](app/screenshots/recommendations.png)
