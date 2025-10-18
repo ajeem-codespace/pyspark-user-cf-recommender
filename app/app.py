@@ -162,9 +162,10 @@ else:
                 with cols[i % n_cols]:
                     st.markdown('<div class="movie-card">', unsafe_allow_html=True)
                     if poster:
-                        st.image(poster, use_column_width=True)
+                        st.image(poster, use_container_width=True)
+
                     else:
-                        st.image("https://via.placeholder.com/300x450.png?text=No+Poster", use_column_width=True)
+                        st.image("https://via.placeholder.com/300x450.png?text=No+Poster", use_container_width=True)
                     st.markdown(f"<div class='movie-title'>{row['title']}</div>", unsafe_allow_html=True)
                     st.markdown(f"<div class='movie-rating'>⭐ {row['pred']:.2f}</div>", unsafe_allow_html=True)
                     st.markdown('</div>', unsafe_allow_html=True)
