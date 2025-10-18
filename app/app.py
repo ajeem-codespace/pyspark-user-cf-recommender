@@ -6,10 +6,12 @@ from utils import get_poster
 
 
 # INITIALIZATION
+
 st.set_page_config(page_title="MiniFlix", layout="wide", page_icon="🎬")
 
 if "selected_user" not in st.session_state:
     st.session_state.selected_user = None
+
 
 # CSS STYLING
 
@@ -120,7 +122,6 @@ users = sorted([
     for f in os.listdir(pre_dir)
     if f.startswith("predictions_user") and f.endswith(".csv")
 ])
-
 
 # HOME SCREEN
 
